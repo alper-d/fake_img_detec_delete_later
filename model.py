@@ -5,13 +5,6 @@ import torchvision
 
 RGB = 3
 
-def gaussian_smooth(inp):
-    val = torch.exp(inp)
-    nominator = val * inp.shape[0] * inp.shape[1]
-    denominator = torch.sum(torch.sum(torch.exp(val))) + torch.finfo(torch.float32).eps
-    return torch.divide(nominator, denominator)
-
-
 class MotionMag(nn.Module):
     def __init__(self):
         super(MotionMag, self).__init__()
@@ -31,7 +24,6 @@ class MotionMag(nn.Module):
     def forward(self, f_prev, f):
         out = self.relu1(self.subs(torch.sub(f, f_prev)))
         out2 = self.relu3(self.conv_mask2(self.relu2(self.conv_mask1(out))))
-        #out3 = torch.multiply(gaussian_smooth(out2), out)
         out3 = torch.multiply(torchvision.transforms.functional.gaussian_blur(out2, kernel_size=3), out)
         return self.relu4(self.cnn_h(out3)) + out3 + f_prev
 
@@ -45,7 +37,6 @@ class FakeNet(nn.Module):
         self.feature_extract = nn.Conv2d(in_channels=RGB, out_channels=RGB, kernel_size=RGB, stride=1, padding= 1)
         self.cnn_relu = nn.ReLU()
         self.manipulator = MotionMag()
-        #TODO CHANGE 299
         self.temporal_extractor = nn.LSTM(input_size=RGB*self.height*self.width, hidden_size=48, num_layers=1, batch_first=True)
         self.linear1 = nn.Linear(in_features=48*self.sequence_len, out_features=1)
         # self.relu1 = nn.ReLU()
@@ -65,7 +56,6 @@ class FakeNet(nn.Module):
             feats[:, i, ...] = self.cnn_relu(self.feature_extract(batch[:,i,...]))
             if i > 0:
                 feats[:, i-1, ...] = self.manipulator(feats[:, i-1, ...], feats[:, i, ...])
-        #del batch
         out = self.temporal_extractor(feats.view(feats.shape[0], feats.shape[1], -1))[0]
         out1 = self.linear1(out.reshape(out.shape[0], -1))
         # out2 = self.linear2(out1)

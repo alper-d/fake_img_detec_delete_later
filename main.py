@@ -98,7 +98,7 @@ def train_wrapper(is_cuda=False):
         model.eval()
         validate(test_loader, model, loss_fnc, optimizer, is_cuda)
 
-        save_name = os.path.join('/content/drive/MyDrive', 'fake_class140x100_' + str(epoch) + '_checkpoint.pth.tar')
+        save_name = os.path.join('/content/drive/MyDrive', 'fake_class2_' + str(epoch) + '_checkpoint.pth.tar')
         torch.save({
             'epoch': epoch + 1,
             'optimizer': optimizer.state_dict(),

@@ -1,0 +1,8 @@
+torch
+imutils
+opencv-python
+pillow
+torchvision
+jupyter
+kaggle
+facenet-pytorch

@@ -12,6 +12,10 @@ import imutils
 
 class CustomPad:
     def __init__(self):
+        """
+        We discarded using custom padding and decided to apply during preprocessing stage.
+        Reason is IO drastically limits the performance and 70x50 is manageable by memory
+        """
         self.height = 350
         self.width = 250
 
@@ -37,7 +41,7 @@ class CustomPad:
 
 
 class FakeDetectDataset(data.Dataset):
-    def __init__(self, root_path, transforms_list=None, image_height=140, image_width=100):
+    def __init__(self, root_path, transforms_list=None, image_height=70, image_width=50):
         self.root_path = root_path
         self.width = image_width
         self.seq_len = 299
@@ -46,32 +50,18 @@ class FakeDetectDataset(data.Dataset):
         # I edited metadata by making "FAKE" -> 0 , "REAL" -> 1
         with open(os.path.join(root_path, "metadata_edited.json"), 'r') as j:
             self.metadata = json.loads(j.read())
-        # self.transformations = transforms.Compose(transforms_list)
-        cropped_image_names = ["%#05d.jpg" % (count + 1) for count in range(0, 299)]
+        if transforms_list != None:
+            self.transformations = transforms.Compose(transforms_list)
         self.image_dict = {}
         dataset_tensor = torch.load(os.path.join(root_path, "tensor_chunk.pt"), weights_only=True)
         print(dataset_tensor.shape)
         for i, video_name in enumerate(self.video_paths):
-            # tensor = torch.empty((self.seq_len, 3, self.height, self.width))
-            # for i, img in enumerate(cropped_image_names):
-            #    tensor[i, :] = torchvision.io.read_image(os.path.join(root_path, video_name, "cropped", img)) / 255
             self.image_dict[video_name] = dataset_tensor[i, :].squeeze() / 255
 
     def __getitem__(self, index):
         video_name = self.video_paths[index]
         print(video_name)
         return self.image_dict[video_name], self.metadata[video_name + ".mp4"]["label"]
-        image_names = os.listdir(os.path.join(self.root_path, video_name, "cropped"))
-        image_names.sort()
-        image_paths = [os.path.join(self.root_path, video_name, "cropped", x) for x in image_names if
-                       x.endswith(".jpg")]
-        # img_array = skimage.io.imread_collection(aaa)
-        sequence_len = len(image_paths)
-        tensor = torch.empty((sequence_len, 3, self.height, self.width))
-        for i, img in enumerate(image_paths):
-            tensor[i, :] = torchvision.io.read_image(img) / 255
-
-        return tensor, self.metadata[video_name + ".mp4"]["label"]
 
     def __len__(self):
         return len(self.video_paths)
