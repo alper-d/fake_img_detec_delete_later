@@ -1,7 +1,7 @@
 # Fake Video Classifier
 ## Installation
 
-To build image inside the directory, run following commands. This might take some time due to dependency download. Especially PyTorch takes significant amount of time.**One of the important feature of Docker part is is loads demo data from remote respository.** So if you want to execute the notebook in local without Docker, that repository has to be cloned anyway. Please refer [Dockerfile].
+To build image inside the directory, run following commands. This might take some time due to dependency download. Especially PyTorch takes significant amount of time.**One of the important feature of Docker part is is loads demo data (6 videos and tensors) from remote respository.** So if you want to execute the notebook in local without Docker, that dataset repository has to be cloned anyway. Please refer Dockerfile.
 
 ```sh
 docker build -t 3d_image .
@@ -21,7 +21,7 @@ Inside the jupyter notebook, demo.ipynb contains necessary instructions for demo
 | data_loader.py| Custom PyTorch data loader class to properly load data into network.|
 | utils.py | Functions which processes videos into frames to pass through network as sequence of images. |
 | fake_class2_29_checkpoint.pth.tar | The weights of the network that we recorded after several experimentations with different configurations.|
-| demo_data/* | We included some videos and tensors in case github clone fails. |
-| 3d_reconstruction_data/* | To make submission file smaller, docker clones portion of data from the personal git repository. Otherwise, submission takes around 60-70mb.  |
+| demo_data/* | We included some videos and tensors in case github clone fails for some reason. |
+| 3d_reconstruction_data/* | To make submission file smaller, docker clones portion of data from the personal git repository during image creation. Otherwise, submission takes around 60-70mb.  |
 
 Please refer the actual pdf for our reasonings and results.
