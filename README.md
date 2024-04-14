@@ -13,7 +13,7 @@ http://127.0.0.1:8888/tree?token=${TOKEN}
 ```
 Inside the jupyter notebook, demo.ipynb contains necessary instructions for demo. **Note that our actual experimentations has been done in Google Colab.**
 
-Dataloader uses tensors (.pt files). We included videos just to address preprocessing steps which takes some time especially in jupyter environment. If you want to execute evaluation directly, skip corresponding cells in notebook. 
+Dataloader uses tensors (.pt files). We included videos just to address preprocessing steps. It may take some time especially inside jupyter environment. If you want to execute evaluation directly, skip corresponding cells in notebook. 
 ## File structure
 
 | File | README |
@@ -23,7 +23,7 @@ Dataloader uses tensors (.pt files). We included videos just to address preproce
 | data_loader.py| Custom PyTorch data loader class to properly load data into network.|
 | utils.py | Functions which processes videos into frames to pass through network as sequence of images. |
 | fake_class2_29_checkpoint.pth.tar | The weights of the network that we recorded after several experimentations with different configurations.|
-| demo_data/* | We included some videos and tensors in case github clone fails for some reason. |
+| demo_data/* | We included some videos and tensors in case github clone fails for some reason. **Folder is created in docker image build time.** |
 | 3d_reconstruction_data/* | To make submission file smaller, docker clones portion of data from the personal git repository during image creation. Otherwise, submission takes around 60-70mb.  |
 
 Please refer the actual pdf for our reasonings and results.

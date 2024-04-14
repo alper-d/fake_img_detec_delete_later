@@ -60,8 +60,7 @@ def extract_faces(root_path):
             continue
         for img_path in image_full_paths:
             frame = cv2.imread(img_path)
-            img = Image.open(img_path)
-            boxes, _ = mtcnn.detect(img)
+            boxes, _ = mtcnn.detect(frame)
             if boxes is not None:
                 boxes = boxes.astype(int)
                 x, y, w, h = boxes[0]
