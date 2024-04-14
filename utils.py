@@ -237,12 +237,9 @@ def save_as_tensor(root_path, height=70, width=50):
     video_paths = sorted([f for f in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, f))])
 
     cropped_image_names = ["%#05d.jpg" % (count + 1) for count in range(0, 299)]
-    save_tensor = torch.empty((len(video_paths), seq_len, 3, height, width), dtype=torch.uint8)
     for i, video_name in enumerate(video_paths):
         print(video_name)
         tensor = torch.empty((seq_len, 3, height, width), dtype=torch.uint8)
         for j, img in enumerate(cropped_image_names):
             tensor[j, :] = torchvision.io.read_image(os.path.join(root_path, video_name, "cropped", img))
-        save_tensor[i, :] = tensor
-
-    torch.save(save_tensor, os.path.join(root_path, 'tensor_chunk.pt'))
+        torch.save(tensor, os.path.join(root_path, f"{video_name}.pt"))

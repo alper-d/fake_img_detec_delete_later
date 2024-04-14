@@ -1,8 +1,5 @@
 import torch.utils.data as data
 import os
-import skimage
-from torch.nn.utils.rnn import pack_padded_sequence
-import torchvision
 import torch
 import json
 import torchvision.transforms.functional as F
@@ -46,17 +43,17 @@ class FakeDetectDataset(data.Dataset):
         self.width = image_width
         self.seq_len = 299
         self.height = image_height
-        self.video_paths = sorted([f for f in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, f))])
+        self.video_paths = sorted([f.split(".")[0] for f in os.listdir(root_path) if f.endswith(".pt")])
         # I edited metadata by making "FAKE" -> 0 , "REAL" -> 1
         with open(os.path.join(root_path, "metadata_edited.json"), 'r') as j:
             self.metadata = json.loads(j.read())
         if transforms_list != None:
             self.transformations = transforms.Compose(transforms_list)
         self.image_dict = {}
-        dataset_tensor = torch.load(os.path.join(root_path, "tensor_chunk.pt"), weights_only=True)
-        print(dataset_tensor.shape)
+        print(len(self.video_paths))
         for i, video_name in enumerate(self.video_paths):
-            self.image_dict[video_name] = dataset_tensor[i, :].squeeze() / 255
+            dataset_tensor = torch.load(os.path.join(root_path, f"{video_name}.pt"), weights_only=True)
+            self.image_dict[video_name] = dataset_tensor / 255
 
     def __getitem__(self, index):
         video_name = self.video_paths[index]
