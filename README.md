@@ -1,7 +1,7 @@
 # Fake Video Classifier
 ## Installation
 
-To build image inside the directory, run following commands. This might take some time due to dependency download. Especially PyTorch takes significant amount of time.
+To build image inside the directory, run following commands. This might take some time due to dependency download. Especially PyTorch takes significant amount of time.**One of the important feature of Docker part is is loads demo data from remote respository.** So if you want to execute the notebook in local without Docker, that repository has to be cloned anyway. Please refer [Dockerfile].
 
 ```sh
 docker build -t 3d_image .
