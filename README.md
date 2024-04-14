@@ -12,6 +12,7 @@ This docker container will launch a jupyter notebook. In terminal you will see a
 http://127.0.0.1:8888/tree?token=${TOKEN}
 ```
 Inside the jupyter notebook, demo.ipynb contains necessary instructions for demo. **Note that our actual experimentations has been done in Google Colab.**
+Dataloader uses tensors (.pt files). We included videos just to address preprocessing steps which takes some time especially in jupyter environment. If you directly execute evaluation, skip corresponding cells in notebook. 
 ## File structure
 
 | File | README |
