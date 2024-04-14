@@ -1,7 +1,7 @@
 # Fake Video Classifier
 ## Installation
 
-To build image inside the directory, run following commands. This might take some time due to dependency download. Especially PyTorch takes significant amount of time.**One of the important feature of Docker part is is loads demo data (6 videos and tensors) from remote respository.** So if you want to execute the notebook in local without Docker, that dataset repository has to be cloned anyway. Please refer Dockerfile.
+To build image inside the directory, run following commands. This might take some time due to dependency download. Especially PyTorch takes significant amount of time. **One of the important feature of Docker part is is loads demo data (6 videos and tensors) from remote respository.** So if you want to execute the notebook in local without Docker, that dataset repository has to be cloned anyway. Please refer Dockerfile.
 
 ```sh
 docker build -t 3d_image .
@@ -12,7 +12,8 @@ This docker container will launch a jupyter notebook. In terminal you will see a
 http://127.0.0.1:8888/tree?token=${TOKEN}
 ```
 Inside the jupyter notebook, demo.ipynb contains necessary instructions for demo. **Note that our actual experimentations has been done in Google Colab.**
-Dataloader uses tensors (.pt files). We included videos just to address preprocessing steps which takes some time especially in jupyter environment. If you directly execute evaluation, skip corresponding cells in notebook. 
+
+Dataloader uses tensors (.pt files). We included videos just to address preprocessing steps which takes some time especially in jupyter environment. If you want to execute evaluation directly, skip corresponding cells in notebook. 
 ## File structure
 
 | File | README |
