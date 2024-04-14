@@ -57,7 +57,7 @@ class FakeDetectDataset(data.Dataset):
 
     def __getitem__(self, index):
         video_name = self.video_paths[index]
-        print(video_name)
+        print("Video: ", video_name)
         return self.image_dict[video_name], self.metadata[video_name + ".mp4"]["label"]
 
     def __len__(self):
