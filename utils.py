@@ -8,44 +8,6 @@ import torchvision
 import torchvision.transforms.functional as F
 from PIL import Image
 
-def print_seq_lens(root_path, size=(70,50)):
-    self = {"height":350,"width":250}
-
-    video_names = sorted([name for name in os.listdir(root_path) if not name.endswith(".mp4") and not name.startswith(".") and not name.endswith(".json")])
-    #video_names.index()
-    trans = transfor.Resize(size)
-
-    for i, video_name in enumerate(video_names):
-        print(video_name, end="->")
-        image_names = sorted(os.listdir(os.path.join(root_path, video_name, "cropped")))
-        os.mkdir("./fixed_size_images_big/" + video_name)
-        os.mkdir(os.path.join("./fixed_size_images_big/", video_name, "cropped"))
-        for j, image_name in enumerate(image_names):
-            img_path = os.path.join(root_path, video_name, "cropped", image_name)
-            image = cv2.imread(img_path)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            h, w = image.shape[0], image.shape[1]
-
-            if image.shape[1] < 350 and image.shape[2] < 250:
-                if h / w > (7 / 5):
-                    image = imutils.resize(image, height=350)
-                else:
-                    image = imutils.resize(image, width=250)
-                h = int(image.shape[0])
-                w = int(image.shape[1])
-            #image = torch.from_numpy(image.transpose(2,0,1))
-
-            extra_top = (350 - h) // 2
-            extra_bottom = (350 - h) - extra_top
-            extra_left = (250 - w) // 2
-            extra_right = (250 - w) - extra_left
-            padding = (extra_left, extra_top, extra_right, extra_bottom)
-
-            img_to_save = trans(F.pad(Image.fromarray(image), padding, 255, 'constant'))
-            img_to_save = cv2.cvtColor(np.array(img_to_save), cv2.COLOR_RGB2BGR)
-            cv2.imwrite(os.path.join("./fixed_size_images_big", video_name, "cropped", image_name),img_to_save)
-        print(j)
-
 
 def videos_to_frames(root_path):
     """
@@ -127,7 +89,6 @@ def interpolate_missing_frames(root_path):
         image_names = sorted(e for e in os.listdir(os.path.join(root_path, video_name, "cropped")) if e.endswith(".jpg"))
         image_full_paths = sorted([os.path.join(root_path, video_name, x) for x in image_names if x.endswith(".jpg")])
         count = 0
-        print("correction: ", video_name)
         for expected_image in cropped_image_names:
             # if there is missing cropped image, we find the closest one and interpolate with it
             if not expected_image in image_names:
@@ -139,7 +100,7 @@ def interpolate_missing_frames(root_path):
                 frame = cv2.imread(path_to_open)
                 cv2.imwrite(path_to_save, frame)
                 count += 1
-        print("correction count: ", video_name, " --> ", count)
+        print("interpolation count: ", video_name, " --> ", count)
 
 
 def resize_excess(root_path, expected_height=350, expected_width=250):
@@ -155,7 +116,7 @@ def resize_excess(root_path, expected_height=350, expected_width=250):
     video_names = sorted([name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name))])
     for video_name in video_names:
         image_names = [e for e in os.listdir(os.path.join(root_path, video_name, "cropped")) if e.endswith(".jpg")]
-        print("correction: ", video_name, " --> ", len(image_names))
+        print("crop correction: ", video_name, " --> ", len(image_names))
         image_names.sort()
         for image_name in image_names:
             with Image.open(os.path.join(root_path, video_name, "cropped", image_name)) as image:
@@ -183,7 +144,7 @@ def pad_resize(root_path, pad_height=350, pad_width=250, resize_to=(70,50)):
     """
     This function upsize the image as fits into (pad_height x pad_width) window without distorting the aspect ratio
     Then it pads the image and makes the dimensions (pad_height x pad_width)
-    Then it resizes to 'resize_to'
+    Then it resizes to 'resize_to' and overwrites the existing image
     :param root_path: Path which encloses the video files
     :param pad_height: Expected height of intermediate image
     :param pad_width: Expected width of intermediate image
@@ -209,7 +170,6 @@ def pad_resize(root_path, pad_height=350, pad_width=250, resize_to=(70,50)):
                     image = imutils.resize(image, width=pad_width)
                 h = int(image.shape[0])
                 w = int(image.shape[1])
-            #image = torch.from_numpy(image.transpose(2,0,1))
 
             extra_top = (pad_height - h) // 2
             extra_bottom = (pad_height - h) - extra_top
