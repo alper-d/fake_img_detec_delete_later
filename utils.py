@@ -47,7 +47,7 @@ def extract_faces(root_path):
     :param root_path: Path which encloses the video files
     :return: None
     """
-    video_names = sorted([name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name))])
+    video_names = sorted([name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name)) and not name.startswith(".")])
     mtcnn = MTCNN(keep_all=True)
     for video_name in video_names:
         image_names = os.listdir(os.path.join(root_path, video_name))
@@ -83,7 +83,7 @@ def interpolate_missing_frames(root_path):
     :param root_path: Path which encloses the video files
     :return: None
     """
-    video_names = sorted([name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name))])
+    video_names = sorted([name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name)) and not name.startswith(".")])
     cropped_image_names = ["%#05d.jpg" % (count + 1) for count in range(0, 299)]
     for video_name in video_names:
         image_names = sorted(e for e in os.listdir(os.path.join(root_path, video_name, "cropped")) if e.endswith(".jpg"))
@@ -113,7 +113,7 @@ def resize_excess(root_path, expected_height=350, expected_width=250):
     """
     print("resize excess")
     expected_aspect_ratio = expected_height / expected_width
-    video_names = sorted([name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name))])
+    video_names = sorted([name for name in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, name)) and not name.startswith(".")])
     for video_name in video_names:
         image_names = [e for e in os.listdir(os.path.join(root_path, video_name, "cropped")) if e.endswith(".jpg")]
         print("crop correction: ", video_name, " --> ", len(image_names))
@@ -151,7 +151,7 @@ def pad_resize(root_path, pad_height=350, pad_width=250, resize_to=(70,50)):
     :param resize_to: Expected final image dims
     :return: None
     """
-    video_paths = sorted([f for f in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, f))])
+    video_paths = sorted([f for f in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, f)) and not f.startswith(".")])
     trans = torchvision.transforms.Resize(resize_to)
     t2 = torchvision.transforms.ToPILImage()
     for i, video_name in enumerate(video_paths):
@@ -194,7 +194,7 @@ def save_as_tensor(root_path, height=70, width=50):
     """
     root_path = root_path
     seq_len = 299
-    video_paths = sorted([f for f in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, f))])
+    video_paths = sorted([f for f in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, f)) and not f.startswith(".")])
 
     cropped_image_names = ["%#05d.jpg" % (count + 1) for count in range(0, 299)]
     for i, video_name in enumerate(video_paths):
