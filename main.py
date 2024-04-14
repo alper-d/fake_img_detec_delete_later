@@ -7,7 +7,6 @@ from data_loader import FakeDetectDataset
 
 
 def train(train_load, model, criterion, optimizer, is_cuda=False):
-    loss_avg = 0.0
     for (batch_no, sample) in enumerate(train_load):
         inp = sample[0]
         label = torch.tensor(sample[1], dtype=torch.float)
@@ -23,7 +22,6 @@ def train(train_load, model, criterion, optimizer, is_cuda=False):
         loss.backward()
         optimizer.step()
         print("BATCH: " + str(batch_no), " loss --> " + str(loss))
-    print('Loss (Train SET): ' + str(loss_avg / batch_no))
 
 
 def validate(val_loader, model, criterion, optimizer, is_cuda=False):
@@ -53,9 +51,7 @@ def train_wrapper(is_cuda=False):
     data_path = os.path.join(os.getcwd(), "fixed_images")
 
     momentum = 0.9
-    weight_decay = 1e-4
     lr = 0.01
-    kfold_no = 10
     save_freq = 3
     model = FakeNet()
     model = torch.nn.DataParallel(model)
@@ -72,7 +68,7 @@ def train_wrapper(is_cuda=False):
     if from_checkpoint:
         check_p = os.listdir(".")
         check_p = max(list(map(lambda x: x[len('fake_classsifier_'): -1 * len('_checkpoint.pth.tar')], check_p)))
-        load_name = os.path.join('/content', 'fake_classsifier_' + str(2) + '_checkpoint.pth.tar')
+        load_name = os.path.join('/content', 'fake_classsifier_' + str(check_p) + '_checkpoint.pth.tar')
         loaded_model = torch.load(load_name)
         model.load_state_dict(loaded_model['state_dict'])
         optimizer.load_state_dict(loaded_model['optimizer'])
@@ -83,7 +79,7 @@ def train_wrapper(is_cuda=False):
     print("dataset created")
 
     for epoch in range(start_epoch, 30):
-        data_loader_params = {'dataset': data_train, 'batch_size': 10, 'shuffle': True, 'sampler': None,
+        data_loader_params = {'dataset': data_train, 'batch_size': 20, 'shuffle': True, 'sampler': None,
                               'batch_sampler': None, 'num_workers': 0, 'collate_fn': None}
         train_loader = DataLoader(**data_loader_params)
         data_loader_params = {'dataset': data_val, 'batch_size': 39, 'shuffle': True, 'sampler': None,
@@ -104,12 +100,5 @@ def train_wrapper(is_cuda=False):
             'optimizer': optimizer.state_dict(),
             'state_dict': model.state_dict(), }, save_name)
 if __name__ == '__main__':
-    print("<-----------------<\n<----------------->\n<----------------->\n<----------------->")
-    print(os.getcwd())
-
-    print(sys.argv)
-    ['example.py', 'one', 'two', 'three']
-
-
-    # Following lines used for data preprocessing
+    train_wrapper()
 
