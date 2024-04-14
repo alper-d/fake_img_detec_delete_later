@@ -93,9 +93,9 @@ def interpolate_missing_frames(root_path):
             # if there is missing cropped image, we find the closest one and interpolate with it
             if not expected_image in image_names:
                 expected_image_int = int(expected_image.split(".")[0])
-                image_name_int = int(min(image_names, key=lambda x:abs(int(x.split(".")[0])-image_name_int)).split(".")[0])
+                image_name_int = int(min(image_names, key=lambda x:abs(int(x.split(".")[0])-expected_image_int)).split(".")[0])
                 print(image_name_int)
-                path_to_open = os.path.join(root_path, video_name, "cropped", "%#05d.jpg" % expected_image_int)
+                path_to_open = os.path.join(root_path, video_name, "cropped", "%#05d.jpg" % image_name_int)
                 path_to_save = os.path.join(root_path, video_name, "cropped", expected_image)
                 frame = cv2.imread(path_to_open)
                 cv2.imwrite(path_to_save, frame)
