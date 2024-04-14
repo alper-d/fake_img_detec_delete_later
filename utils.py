@@ -86,7 +86,6 @@ def interpolate_missing_frames(root_path):
     cropped_image_names = ["%#05d.jpg" % (count + 1) for count in range(0, 299)]
     for video_name in video_names:
         image_names = sorted(e for e in os.listdir(os.path.join(root_path, video_name, "cropped")) if e.endswith(".jpg"))
-        image_full_paths = sorted([os.path.join(root_path, video_name, x) for x in image_names if x.endswith(".jpg")])
         count = 0
         for expected_image in cropped_image_names:
             # if there is missing cropped image, we find the closest one and interpolate with it
@@ -155,7 +154,7 @@ def pad_resize(root_path, pad_height=350, pad_width=250, resize_to=(70,50)):
     t2 = torchvision.transforms.ToPILImage()
     for i, video_name in enumerate(video_paths):
         print(video_name, end="->")
-        image_names = sorted(os.listdir(os.path.join(root_path, video_name, "cropped")))
+        image_names = sorted([i_name for i_name in os.listdir(os.path.join(root_path, video_name, "cropped")) if i_name.endswith(".jpg")])
         for j, image_name in enumerate(image_names):
             img_path = os.path.join(root_path, video_name, "cropped", image_name)
             image = cv2.imread(img_path)
